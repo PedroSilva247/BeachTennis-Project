@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -35,5 +37,7 @@ public class Team {
     @JsonBackReference
     private Professor professor;
 
-
+    @Column(name = "start_at_team", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime startAt;
 }

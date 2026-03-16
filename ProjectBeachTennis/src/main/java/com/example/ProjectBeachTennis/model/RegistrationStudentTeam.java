@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,6 +30,7 @@ public class RegistrationStudentTeam {
     @JsonBackReference
     private Student student;
 
-    @Column(name = "startdate_registration_student_team", nullable = false)
-    private Date startdateRegistrationStudentTeam;
+    @Column(name = "start_at_registration_student_team", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime startAt;
 }

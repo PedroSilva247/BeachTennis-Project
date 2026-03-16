@@ -38,5 +38,10 @@ public class StudentController {
         return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteStudant(@PathVariable UUID id) {
+        studentService.delete(id);
+        return ResponseEntity.ok().body("Aluno deletado");
+    }
 
 }

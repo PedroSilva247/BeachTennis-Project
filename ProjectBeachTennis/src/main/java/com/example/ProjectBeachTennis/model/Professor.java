@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.Email;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,4 +41,10 @@ public class Professor {
 //    @Enumerated(EnumType.STRING)
 //    private Status status;
     private String status;
+
+    @Column(name = "start_at_professor", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime startAt;
+
+
 }

@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -41,8 +43,9 @@ public class Student {
     @Column(name = "balance_student", nullable = false)
     private double balance;
 
-    @Column(name = "startdate_student", nullable = false)
-    private Date startDate;
+    @Column(name = "start_at_student", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime startAt;
 
     @Column(name = "status_student", nullable = false)
 //    @Enumerated(EnumType.STRING)

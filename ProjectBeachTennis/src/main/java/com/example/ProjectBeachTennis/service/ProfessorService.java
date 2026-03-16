@@ -1,5 +1,8 @@
 package com.example.ProjectBeachTennis.service;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.example.ProjectBeachTennis.errors.EntityAlreadyExistsException;
+import com.example.ProjectBeachTennis.errors.EntityNonExistsException;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
@@ -41,6 +44,25 @@ public class ProfessorService {
     }
 
     public Professor saveProfessor(Professor professor) {
+        if(professorRepository.existsByCpf(professor.getCpf())) {
+            throw new EntityAlreadyExistsException("CPF já cadastrado");
+        } else if (professorRepository.existsByEmail(professor.getEmail())){
+            throw new EntityAlreadyExistsException("Email já cadastrado");
+        } else if (professorRepository.existsByFullName(professor.getFullName())){
+            throw new EntityAlreadyExistsException("Nome já cadastrado");
+        }
+
+        var passwordHashred = BCrypt.withDefaults()
+                .hashToString(12,professor.getPassword().toCharArray());
+        professor.setPassword(passwordHashred);
         return professorRepository.save(professor);
+    }
+
+    public void delete(UUID id) {
+        var professor = this.professorRepository.findById(id).orElse(null);
+        if(professor == null) {
+            throw new EntityNonExistsException("Professor não encontrado");
+        }
+        professorRepository.delete(professor);
     }
 }

@@ -21,4 +21,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
             "JOIN RegistrationStudentTeam rst ON s.id = rst.student.id " +
             "WHERE rst.team.id = :teamId")
     List<Student> findStudentsByTeamId(@Param("id") UUID teamId);
+
+    boolean existsByFullName(String fullName);
+    boolean existsByCpf(String cpf);
+    boolean existsByEmail(String email);
 }

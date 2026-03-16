@@ -60,4 +60,10 @@ public class ProfessorController {
         return new ResponseEntity<>(professorService.saveProfessor(professor), HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProfessor(@PathVariable UUID id) {
+        professorService.delete(id);
+        return ResponseEntity.ok().body("Professor deletado");
+    }
+
 }
