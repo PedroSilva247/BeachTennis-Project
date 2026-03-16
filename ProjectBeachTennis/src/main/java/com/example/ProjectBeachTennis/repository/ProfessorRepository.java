@@ -8,9 +8,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
-    Optional<Professor> findById(Integer id);
+public interface ProfessorRepository extends JpaRepository<Professor, UUID> {
+    Optional<Professor> findById(UUID id);
 
     List<Professor> findAll();
 

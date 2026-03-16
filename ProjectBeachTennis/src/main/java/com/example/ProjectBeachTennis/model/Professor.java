@@ -9,6 +9,7 @@ import lombok.Data;
 import jakarta.validation.constraints.Email;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -16,9 +17,9 @@ import java.util.List;
 public class Professor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_professor", nullable = false)
-    private int id;
+    private UUID id;
 
     @Column(name = "full_name_professor", nullable = false)
     private String fullName;

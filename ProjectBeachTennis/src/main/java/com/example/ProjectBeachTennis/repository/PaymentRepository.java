@@ -3,5 +3,7 @@ package com.example.ProjectBeachTennis.repository;
 import com.example.ProjectBeachTennis.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+import java.util.UUID;
+
+public interface PaymentRepository extends JpaRepository<Payment, UUID> {
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/professor")
@@ -25,7 +26,7 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> getProfessorById(@PathVariable Integer id) {
+    public ResponseEntity<Professor> getProfessorById(@PathVariable UUID id) {
         Optional<Professor> professor = professorService.getProfessorById(id);
         if(professor.isPresent()) {
             return ResponseEntity.ok(professor.get());
@@ -35,7 +36,7 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}/team")
-    public ResponseEntity<List<Team>> getTeamsByProfessorId(@PathVariable Integer id) {
+    public ResponseEntity<List<Team>> getTeamsByProfessorId(@PathVariable UUID id) {
         List<Team> teams = professorService.getTeamsByProfessorId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);
@@ -45,7 +46,7 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}/student")
-    public ResponseEntity<List<Student>> getStudentsByProfessorId(@PathVariable Integer id) {
+    public ResponseEntity<List<Student>> getStudentsByProfessorId(@PathVariable UUID id) {
         List<Student> students = professorService.getStudentsByProfessorId(id);
         if(!students.isEmpty()) {
             return ResponseEntity.ok(students);
@@ -54,7 +55,7 @@ public class ProfessorController {
         }
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping //(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Professor> saveProfessor(@RequestBody Professor professor) {
         return new ResponseEntity<>(professorService.saveProfessor(professor), HttpStatus.CREATED);
     }

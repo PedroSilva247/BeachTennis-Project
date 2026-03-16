@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/student")
@@ -23,7 +24,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}/team")
-    public ResponseEntity<List<Team>> getTeamsByStudentId(@PathVariable Integer id) {
+    public ResponseEntity<List<Team>> getTeamsByStudentId(@PathVariable UUID id) {
         List<Team> teams = studentService.getTeamsByStudentId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);

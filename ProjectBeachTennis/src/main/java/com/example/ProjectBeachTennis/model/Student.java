@@ -9,15 +9,16 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "student")
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_student", nullable = false)
-    private int id;
+    private UUID id;
 
     @Column(name = "full_name_student", nullable = false)
     private String fullName;

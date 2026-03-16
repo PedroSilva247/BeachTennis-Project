@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/team")
@@ -25,17 +26,17 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Team> getTeamById(@PathVariable Integer id) {
+    public Optional<Team> getTeamById(@PathVariable UUID id) {
         return teamService.getTeamById(id);
     }
 
     @GetMapping("/{id}/student")
-    public List<Student> getStudentsByTeamId(@PathVariable Integer id) {
+    public List<Student> getStudentsByTeamId(@PathVariable UUID id) {
         return teamService.getStudentsByTeamId(id);
     }
 
     @GetMapping("/{id}/lesson")
-    public List<Lesson> getLessonsByTeamId(@PathVariable Integer id) {
+    public List<Lesson> getLessonsByTeamId(@PathVariable UUID id) {
         return teamService.getLessonsByTeamId(id);
     }
 

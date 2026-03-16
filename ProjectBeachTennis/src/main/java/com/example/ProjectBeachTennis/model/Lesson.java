@@ -8,15 +8,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "lesson")
 public class Lesson {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_lesson", nullable = false)
-    private int id;
+    private UUID id;
 
     @Column(name = "datetime_lesson", nullable = false)
     private LocalDateTime datetime;

@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -15,9 +16,9 @@ import java.util.List;
 @Table(name = "team")
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_team", nullable = false)
-    private int id;
+    private UUID id;
 
     @Column(name = "day_of_week_team", nullable = false)
     private int dayOfWeek;

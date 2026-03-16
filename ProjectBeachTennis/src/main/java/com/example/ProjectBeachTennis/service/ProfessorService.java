@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProfessorService {
@@ -27,15 +28,15 @@ public class ProfessorService {
         return professorRepository.findAll();
     }
 
-    public Optional<Professor> getProfessorById(Integer id) {
+    public Optional<Professor> getProfessorById(UUID id) {
         return professorRepository.findById(id);
     }
 
-    public List<Team> getTeamsByProfessorId(Integer id) {
+    public List<Team> getTeamsByProfessorId(UUID id) {
         return teamRepository.findTeamsByProfessorId(id);
     }
 
-    public List<Student> getStudentsByProfessorId(Integer id) {
+    public List<Student> getStudentsByProfessorId(UUID id) {
         return studentRepository.findStudentsByProfessorId(id);
     }
 

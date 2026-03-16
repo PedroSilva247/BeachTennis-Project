@@ -7,15 +7,16 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "registration_student_team")
 public class RegistrationStudentTeam {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_registration_student_team")
-    private int idResgistrationStudentTeam;
+    private UUID idResgistrationStudentTeam;
 
     @ManyToOne
     @JoinColumn(name = "team_id_team", nullable = false, referencedColumnName = "id_team")
