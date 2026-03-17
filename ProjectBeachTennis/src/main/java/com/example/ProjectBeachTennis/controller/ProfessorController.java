@@ -55,11 +55,6 @@ public class ProfessorController {
         }
     }
 
-    @PostMapping //(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Professor> saveProfessor(@RequestBody Professor professor) {
-        return new ResponseEntity<>(professorService.saveProfessor(professor), HttpStatus.CREATED);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity deleteProfessor(@PathVariable UUID id) {
         professorService.delete(id);

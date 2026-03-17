@@ -15,6 +15,8 @@ public interface ProfessorRepository extends JpaRepository<Professor, UUID> {
 
     List<Professor> findAll();
 
+    Optional<Professor> findByEmail(String email);
+
     boolean existsByFullName(String fullName);
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);

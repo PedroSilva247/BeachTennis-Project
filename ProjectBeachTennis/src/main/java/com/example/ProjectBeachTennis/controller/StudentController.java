@@ -33,11 +33,6 @@ public class StudentController {
         }
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Student> saveStudent(@RequestBody Student student) {
-        return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity deleteStudant(@PathVariable UUID id) {
         studentService.delete(id);

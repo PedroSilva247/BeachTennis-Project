@@ -22,6 +22,8 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
             "WHERE rst.team.id = :teamId")
     List<Student> findStudentsByTeamId(@Param("id") UUID teamId);
 
+    Optional<Student> findByEmail(String email);
+
     boolean existsByFullName(String fullName);
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
