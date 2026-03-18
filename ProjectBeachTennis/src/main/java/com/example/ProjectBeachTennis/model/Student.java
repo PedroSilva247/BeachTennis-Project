@@ -45,8 +45,8 @@ public class Student implements UserDetails {
     @Column(unique = true, name = "cpf_student", nullable = false)
     private String cpf;
 
-    @Column(name = "balance_student", nullable = false)
-    private double balance;
+//    @Column(name = "balance_student", nullable = false)
+//    private double balance;
 
     @Column(name = "start_at_student", nullable = false)
     @CreationTimestamp

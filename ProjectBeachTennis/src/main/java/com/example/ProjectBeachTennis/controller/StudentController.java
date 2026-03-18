@@ -51,9 +51,21 @@ public class StudentController {
 
     @PreAuthorize("#id = authentication.principal.id")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteStudant(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteStudant(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        Student studentLogged = studentService.getStudentByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        if (!studentLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         studentService.delete(id);
         return ResponseEntity.ok().body("Aluno deletado");
     }
+
 
 }

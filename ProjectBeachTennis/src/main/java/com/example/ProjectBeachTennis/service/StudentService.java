@@ -43,7 +43,7 @@ public class StudentService {
         } else if (studentRepository.existsByFullName(student.getFullName())){
             throw new EntityAlreadyExistsException("Nome já cadastrado");
         }
-        student.setBalance(0);
+        // student.setBalance(0);
         var passwordHashred = BCrypt.withDefaults()
                 .hashToString(12,student.getPassword().toCharArray());
         student.setPassword(passwordHashred);

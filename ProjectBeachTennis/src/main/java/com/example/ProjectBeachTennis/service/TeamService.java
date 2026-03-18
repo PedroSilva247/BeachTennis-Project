@@ -1,6 +1,7 @@
 package com.example.ProjectBeachTennis.service;
 
 import com.example.ProjectBeachTennis.model.Lesson;
+import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
 import com.example.ProjectBeachTennis.repository.LessonRepository;
@@ -39,6 +40,8 @@ public class TeamService {
     public List<Lesson> getLessonsByTeamId(UUID id) {
         return lessonRepository.findLessonsByTeamId(id);
     }
+
+
 
 
 

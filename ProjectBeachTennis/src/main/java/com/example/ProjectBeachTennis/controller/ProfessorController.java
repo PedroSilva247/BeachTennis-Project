@@ -29,7 +29,18 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> getProfessorById(@PathVariable UUID id) {
+    public ResponseEntity<?> getProfessorById(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+            ) {
+        String emailLogged = userDetails.getUsername();
+        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         Optional<Professor> professor = professorService.getProfessorById(id);
         if(professor.isPresent()) {
             return ResponseEntity.ok(professor.get());
