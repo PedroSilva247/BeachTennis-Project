@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +38,19 @@ public class ProfessorController {
         }
     }
 
+    @PreAuthorize("hasRole('PROFESSOR')")
     @GetMapping("/{id}/team")
-    public ResponseEntity<List<Team>> getTeamsByProfessorId(@PathVariable UUID id) {
+    public ResponseEntity<?> getTeamsByProfessorId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
         List<Team> teams = professorService.getTeamsByProfessorId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);
@@ -45,8 +59,20 @@ public class ProfessorController {
         }
     }
 
+    @PreAuthorize("hasRole('PROFESSOR')")
     @GetMapping("/{id}/student")
-    public ResponseEntity<List<Student>> getStudentsByProfessorId(@PathVariable UUID id) {
+    public ResponseEntity<?> getStudentsByProfessorId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         List<Student> students = professorService.getStudentsByProfessorId(id);
         if(!students.isEmpty()) {
             return ResponseEntity.ok(students);
@@ -55,8 +81,20 @@ public class ProfessorController {
         }
     }
 
+    @PreAuthorize("#id = authentication.principal.id")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteProfessor(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteProfessor(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         professorService.delete(id);
         return ResponseEntity.ok().body("Professor deletado");
     }

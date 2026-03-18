@@ -2,8 +2,10 @@ package com.example.ProjectBeachTennis.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "registration_student_team")
 public class RegistrationStudentTeam {

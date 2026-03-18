@@ -1,5 +1,6 @@
 package com.example.ProjectBeachTennis.service;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.ProjectBeachTennis.errors.EntityAlreadyExistsException;
 import com.example.ProjectBeachTennis.errors.EntityNonExistsException;
 import com.example.ProjectBeachTennis.model.Professor;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,6 +31,10 @@ public class StudentService {
         return teamRepository.findTeamsByStudentId(id);
     }
 
+    public Optional<Student> getStudentByEmail(String email) {
+        return studentRepository.findByEmail(email);
+    }
+
     public Student saveStudent(Student student) {
         if(studentRepository.existsByCpf(student.getCpf())) {
             throw new EntityAlreadyExistsException("CPF já cadastrado");
@@ -37,6 +43,10 @@ public class StudentService {
         } else if (studentRepository.existsByFullName(student.getFullName())){
             throw new EntityAlreadyExistsException("Nome já cadastrado");
         }
+        student.setBalance(0);
+        var passwordHashred = BCrypt.withDefaults()
+                .hashToString(12,student.getPassword().toCharArray());
+        student.setPassword(passwordHashred);
         return studentRepository.save(student);
     }
 

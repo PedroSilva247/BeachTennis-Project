@@ -11,16 +11,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StudentRepository extends JpaRepository<Student, UUID> {
-    @Query("SELECT s FROM Student s " +
-            "JOIN RegistrationStudentTeam rst ON s.id = rst.student.id " +
-            "JOIN Team t ON rst.team.id = t.id " +
-            "WHERE t.professor.id = :professorId")
-    List<Student> findStudentsByProfessorId(@Param("id") UUID id);
+    @Query("SELECT rst.student FROM RegistrationStudentTeam rst WHERE rst.team.professor.id = :professorId")
+    List<Student> findStudentsByProfessorId(@Param("professorId") UUID professorId);
 
-    @Query("SELECT s FROM Student s " +
-            "JOIN RegistrationStudentTeam rst ON s.id = rst.student.id " +
-            "WHERE rst.team.id = :teamId")
-    List<Student> findStudentsByTeamId(@Param("id") UUID teamId);
+    @Query("SELECT rst.student FROM RegistrationStudentTeam rst WHERE rst.team.id = :teamId")
+    List<Student> findStudentsByTeamId(@Param("teamId") UUID teamId);
 
     Optional<Student> findByEmail(String email);
 

@@ -1,5 +1,6 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
 import com.example.ProjectBeachTennis.service.StudentService;
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +27,20 @@ public class StudentController {
         return  studentService.getAllStudents();
     }
 
+    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/{id}/team")
-    public ResponseEntity<List<Team>> getTeamsByStudentId(@PathVariable UUID id) {
+    public ResponseEntity<?> getTeamsByStudentId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+            ) {
+        String emailLogged = userDetails.getUsername();
+        Student studentLogged = studentService.getStudentByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        if (!studentLogged.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         List<Team> teams = studentService.getTeamsByStudentId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);
@@ -33,6 +49,7 @@ public class StudentController {
         }
     }
 
+    @PreAuthorize("#id = authentication.principal.id")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteStudant(@PathVariable UUID id) {
         studentService.delete(id);

@@ -43,6 +43,10 @@ public class ProfessorService {
         return studentRepository.findStudentsByProfessorId(id);
     }
 
+    public Optional<Professor> getProfessorByEmail(String email) {
+        return professorRepository.findByEmail(email);
+    }
+
     public Professor saveProfessor(Professor professor) {
         if(professorRepository.existsByCpf(professor.getCpf())) {
             throw new EntityAlreadyExistsException("CPF já cadastrado");

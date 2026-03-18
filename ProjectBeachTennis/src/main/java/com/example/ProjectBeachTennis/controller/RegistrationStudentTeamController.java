@@ -1,5 +1,6 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamDTO;
 import com.example.ProjectBeachTennis.model.RegistrationStudentTeam;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.service.RegistrationStudentTeamService;
@@ -22,9 +23,10 @@ public class RegistrationStudentTeamController {
         return registrationStudentTeamService.getAllRegistrationStudentTeam();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegistrationStudentTeam> saveRegistrationStudentTeam(@RequestBody RegistrationStudentTeam registrationStudentTeam) {
-        return new ResponseEntity<>(registrationStudentTeamService.saveRegistrationStudentTeam(registrationStudentTeam), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<?> saveRegistrationStudentTeam(@RequestBody RegistrationStudentTeamDTO dto) {
+        RegistrationStudentTeam saved = registrationStudentTeamService.saveRegistrationStudentTeam(dto);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
 }

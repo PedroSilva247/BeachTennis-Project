@@ -39,8 +39,6 @@ public class AuthService {
     }
 
     public String loginProfessor(String email, String passwordEntered) {
-        System.out.println("EMAIL" + email);
-        System.out.println("passwordEntered" + passwordEntered);
         var professor = professorRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor não encontrado"));
         if (!passwordEncoder.matches(passwordEntered, professor.getPassword())) {

@@ -1,6 +1,7 @@
 package com.example.ProjectBeachTennis.controller;
 
 import com.example.ProjectBeachTennis.model.Lesson;
+import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
 import com.example.ProjectBeachTennis.service.TeamService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,8 +43,18 @@ public class TeamController {
         return teamService.getLessonsByTeamId(id);
     }
 
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Team> saveTeam(@RequestBody Team team) {
+    public ResponseEntity<?> saveTeam(
+            @RequestBody Team team,
+            @AuthenticationPrincipal Professor professorLogged
+            ) {
+        System.out.println(professorLogged.getId());
+        if (!professorLogged.getId().equals(team.getProfessor().getId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
         return new ResponseEntity<>(teamService.saveTeam(team), HttpStatus.CREATED);
     }
+
 }
