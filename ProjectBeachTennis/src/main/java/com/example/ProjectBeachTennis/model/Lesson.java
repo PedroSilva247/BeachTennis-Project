@@ -22,7 +22,7 @@ public class Lesson {
     @Column(name = "datetime_lesson", nullable = false)
     private LocalDateTime datetime;
 
-    @Column(name = "is_lesson_conducted")
+    @Column(name = "is_lesson_conducted", nullable = false)
     private boolean isLessonConducted;
 
     @ManyToOne

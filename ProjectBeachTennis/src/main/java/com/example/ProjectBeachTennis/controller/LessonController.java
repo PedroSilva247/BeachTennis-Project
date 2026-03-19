@@ -1,5 +1,7 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.LessonRequestDTO;
+import com.example.ProjectBeachTennis.dto.LessonResponseDTO;
 import com.example.ProjectBeachTennis.service.LessonService;
 import com.example.ProjectBeachTennis.model.Lesson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class LessonController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Lesson> saveLesson(@RequestBody Lesson lesson) {
-        return new ResponseEntity<>(lessonService.saveLesson(lesson), HttpStatus.CREATED);
+    public ResponseEntity<LessonResponseDTO> saveLesson(@RequestBody LessonRequestDTO dto) {
+        return new ResponseEntity<>(lessonService.saveLesson(dto), HttpStatus.CREATED);
     }
 }

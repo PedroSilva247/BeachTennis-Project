@@ -1,5 +1,9 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.LessonResponseDTO;
+import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
+import com.example.ProjectBeachTennis.dto.TeamResponseDTO;
+import com.example.ProjectBeachTennis.model.Lesson;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
@@ -28,22 +32,44 @@ public class StudentController {
     }
 
     @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/{id}/team")
+    @GetMapping("/{id}/teams")
     public ResponseEntity<?> getTeamsByStudentId(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
             ) {
         String emailLogged = userDetails.getUsername();
-        Student studentLogged = studentService.getStudentByEmail(emailLogged)
+        StudentResponseDTO studentLogged = studentService.getStudentByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
-        if (!studentLogged.getId().equals(id)) {
+        if (!studentLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
-        List<Team> teams = studentService.getTeamsByStudentId(id);
+        List<TeamResponseDTO> teams = studentService.getTeamsByStudentId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/{id}/lessons")
+    public ResponseEntity<?> getLessonsByStudentId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        StudentResponseDTO studentLogged = studentService.getStudentByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        if (!studentLogged.id().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
+        List<LessonResponseDTO> lessons = studentService.getLessonsByStudentId(id);
+        if(!lessons.isEmpty()) {
+            return ResponseEntity.ok(lessons);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -56,10 +82,10 @@ public class StudentController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Student studentLogged = studentService.getStudentByEmail(emailLogged)
+        StudentResponseDTO studentLogged = studentService.getStudentByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
-        if (!studentLogged.getId().equals(id)) {
+        if (!studentLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 

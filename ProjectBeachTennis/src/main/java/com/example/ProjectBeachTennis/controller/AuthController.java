@@ -1,6 +1,6 @@
 package com.example.ProjectBeachTennis.controller;
 
-import com.example.ProjectBeachTennis.dto.LoginRequest;
+import com.example.ProjectBeachTennis.dto.*;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.service.AuthService;
@@ -43,12 +43,12 @@ public class AuthController {
     }
 
     @PostMapping("/professor/register")
-    public ResponseEntity<Professor> saveProfessor(@RequestBody Professor professor) {
+    public ResponseEntity<ProfessorResponseDTO> saveProfessor(@RequestBody ProfessorRequestDTO professor) {
         return new ResponseEntity<>(professorService.saveProfessor(professor), HttpStatus.CREATED);
     }
 
     @PostMapping("/student/register")
-    public ResponseEntity<Student> saveStudent(@RequestBody Student student) {
+    public ResponseEntity<StudentResponseDTO> saveStudent(@RequestBody StudentRequestDTO student) {
         return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
     }
 

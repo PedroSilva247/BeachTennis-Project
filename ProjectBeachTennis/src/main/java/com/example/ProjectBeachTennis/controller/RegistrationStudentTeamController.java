@@ -1,5 +1,6 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.ProfessorResponseDTO;
 import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamDTO;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.RegistrationStudentTeam;
@@ -42,9 +43,9 @@ public class RegistrationStudentTeamController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-        if(!professorLogged.getId().equals(teamService.getTeamById(dto.getTeamId()).get().getProfessor().getId())) {
+        if(!professorLogged.id().equals(teamService.getTeamById(dto.getTeamId()).get().getProfessor().getId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 

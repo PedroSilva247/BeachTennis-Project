@@ -1,8 +1,13 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.LessonResponseDTO;
+import com.example.ProjectBeachTennis.dto.ProfessorResponseDTO;
+import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
+import com.example.ProjectBeachTennis.dto.TeamResponseDTO;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
+import com.example.ProjectBeachTennis.service.LessonService;
 import com.example.ProjectBeachTennis.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +28,7 @@ public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 
+    // for development
     @GetMapping
     public List<Professor> getAllProfessors() {
         return professorService.getAllProfessors();
@@ -34,14 +40,14 @@ public class ProfessorController {
             @AuthenticationPrincipal UserDetails userDetails
             ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
-        if (!professorLogged.getId().equals(id)) {
+        if (!professorLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
-        Optional<Professor> professor = professorService.getProfessorById(id);
+        Optional<ProfessorResponseDTO> professor = professorService.getProfessorById(id);
         if(professor.isPresent()) {
             return ResponseEntity.ok(professor.get());
         } else {
@@ -50,19 +56,19 @@ public class ProfessorController {
     }
 
     @PreAuthorize("hasRole('PROFESSOR')")
-    @GetMapping("/{id}/team")
+    @GetMapping("/{id}/teams")
     public ResponseEntity<?> getTeamsByProfessorId(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
-        if (!professorLogged.getId().equals(id)) {
+        if (!professorLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
-        List<Team> teams = professorService.getTeamsByProfessorId(id);
+        List<TeamResponseDTO> teams = professorService.getTeamsByProfessorId(id);
         if(!teams.isEmpty()) {
             return ResponseEntity.ok(teams);
         } else {
@@ -71,22 +77,44 @@ public class ProfessorController {
     }
 
     @PreAuthorize("hasRole('PROFESSOR')")
-    @GetMapping("/{id}/student")
+    @GetMapping("/{id}/students")
     public ResponseEntity<?> getStudentsByProfessorId(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
-        if (!professorLogged.getId().equals(id)) {
+        if (!professorLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
-        List<Student> students = professorService.getStudentsByProfessorId(id);
+        List<StudentResponseDTO> students = professorService.getStudentsByProfessorId(id);
         if(!students.isEmpty()) {
             return ResponseEntity.ok(students);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("hasRole('PROFESSOR')")
+    @GetMapping("/{id}/lessons")
+    public ResponseEntity<?> getLessonsByProfessorId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.id().equals(id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
+        List<LessonResponseDTO> lessons = professorService.getLessonsByProfessorId(id);
+        if(!lessons.isEmpty()) {
+            return ResponseEntity.ok(lessons);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -99,15 +127,17 @@ public class ProfessorController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
-        if (!professorLogged.getId().equals(id)) {
+        if (!professorLogged.id().equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
         professorService.delete(id);
         return ResponseEntity.ok().body("Professor deletado");
     }
+
+
 
 }

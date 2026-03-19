@@ -1,5 +1,8 @@
 package com.example.ProjectBeachTennis.controller;
 
+import com.example.ProjectBeachTennis.dto.ProfessorResponseDTO;
+import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
+import com.example.ProjectBeachTennis.dto.TeamRequestDTO;
 import com.example.ProjectBeachTennis.model.Lesson;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
@@ -46,18 +49,18 @@ public class TeamController {
         String emailLogged = userDetails.getUsername();
 
         // PROFESSOR
-        Optional<Professor> professorOpt = professorService.getProfessorByEmail(emailLogged);
+        Optional<ProfessorResponseDTO> professorOpt = professorService.getProfessorByEmail(emailLogged);
         if (professorOpt.isPresent()) {
-            if (!professorOpt.get().getId().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
+            if (!professorOpt.get().id().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getTeamById(id));
         }
 
         // STUDENT
-        Optional<Student> studentOpt = studentService.getStudentByEmail(emailLogged);
+        Optional<StudentResponseDTO> studentOpt = studentService.getStudentByEmail(emailLogged);
         if (studentOpt.isPresent()) {
-            if (!studentService.getTeamsByStudentId(studentOpt.get().getId()).contains(teamService.getTeamById(id).get())) {
+            if (!studentService.getTeamsByStudentId(studentOpt.get().id()).contains(teamService.getTeamById(id).get())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getTeamById(id));
@@ -66,7 +69,7 @@ public class TeamController {
         throw new RuntimeException("Usuário não encontrado");
     }
 
-    @GetMapping("/{id}/student")
+    @GetMapping("/{id}/students")
     public ResponseEntity<?> getStudentsByTeamId(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
@@ -74,18 +77,18 @@ public class TeamController {
         String emailLogged = userDetails.getUsername();
 
         // PROFESSOR
-        Optional<Professor> professorOpt = professorService.getProfessorByEmail(emailLogged);
+        Optional<ProfessorResponseDTO> professorOpt = professorService.getProfessorByEmail(emailLogged);
         if (professorOpt.isPresent()) {
-            if (!professorOpt.get().getId().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
+            if (!professorOpt.get().id().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getStudentsByTeamId(id));
         }
 
         // STUDENT
-        Optional<Student> studentOpt = studentService.getStudentByEmail(emailLogged);
+        Optional<StudentResponseDTO> studentOpt = studentService.getStudentByEmail(emailLogged);
         if (studentOpt.isPresent()) {
-            if (!studentService.getTeamsByStudentId(studentOpt.get().getId()).contains(teamService.getTeamById(id).get())) {
+            if (!studentService.getTeamsByStudentId(studentOpt.get().id()).contains(teamService.getTeamById(id).get())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getStudentsByTeamId(id));
@@ -94,25 +97,25 @@ public class TeamController {
         throw new RuntimeException("Usuário não encontrado");
     }
 
-    @GetMapping("/{id}/lesson")
+    @GetMapping("/{id}/lessons")
     public ResponseEntity<?> getLessonsByTeamId(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
         // PROFESSOR
-        Optional<Professor> professorOpt = professorService.getProfessorByEmail(emailLogged);
+        Optional<ProfessorResponseDTO> professorOpt = professorService.getProfessorByEmail(emailLogged);
         if (professorOpt.isPresent()) {
-            if (!professorOpt.get().getId().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
+            if (!professorOpt.get().id().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getLessonsByTeamId(id));
         }
 
         // STUDENT
-        Optional<Student> studentOpt = studentService.getStudentByEmail(emailLogged);
+        Optional<StudentResponseDTO> studentOpt = studentService.getStudentByEmail(emailLogged);
         if (studentOpt.isPresent()) {
-            if (!studentService.getTeamsByStudentId(studentOpt.get().getId()).contains(teamService.getTeamById(id).get())) {
+            if (!studentService.getTeamsByStudentId(studentOpt.get().id()).contains(teamService.getTeamById(id).get())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
             }
             return ResponseEntity.ok().body(teamService.getLessonsByTeamId(id));
@@ -124,18 +127,18 @@ public class TeamController {
     @PreAuthorize("hasRole('ROLE_PROFESSOR')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveTeam(
-            @RequestBody Team team,
+            @RequestBody TeamRequestDTO dto,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String emailLogged = userDetails.getUsername();
-        Professor professorLogged = professorService.getProfessorByEmail(emailLogged)
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
-        if (!professorLogged.getId().equals(team.getProfessor().getId())) {
+        if (!professorLogged.id().equals(dto.professorId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
-        return new ResponseEntity<>(teamService.saveTeam(team), HttpStatus.CREATED);
+        return new ResponseEntity<>(teamService.saveTeam(dto), HttpStatus.CREATED);
     }
 
 }
