@@ -38,8 +38,17 @@ public class ProfessorService {
     private LessonRepository lessonRepository;
 
     // for development
-    public List<Professor> getAllProfessors() {
-        return professorRepository.findAll();
+    public List<ProfessorResponseDTO> getAllProfessors() {
+        List<Professor> professors = professorRepository.findAll();
+
+        return professors.stream()
+                .map(professor -> new ProfessorResponseDTO(
+                        professor.getId(),
+                        professor.getFullName(),
+                        professor.getEmail(),
+                        professor.getStatus(),
+                        professor.getStartAt()
+                )).toList();
     }
 
     public Optional<ProfessorResponseDTO> getProfessorById(UUID id) {
@@ -96,18 +105,7 @@ public class ProfessorService {
                 ));
     }
 
-    public List<LessonResponseDTO> getLessonsByProfessorId(UUID id) {
-        List<Lesson> lessons = lessonRepository.findLessonsByProfessorId(id);
 
-        return lessons.stream()
-                .map(lesson -> new LessonResponseDTO(
-                        lesson.getId(),
-                        lesson.getDatetime(),
-                        lesson.isLessonConducted(),
-                        lesson.getTeam().getId(),
-                        lesson.getTeam().getProfessor().getFullName()
-                )).toList();
-    }
 
 
 

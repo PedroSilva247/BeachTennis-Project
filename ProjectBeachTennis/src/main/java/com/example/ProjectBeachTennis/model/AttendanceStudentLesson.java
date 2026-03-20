@@ -4,37 +4,43 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "registration_student_team")
-public class RegistrationStudentTeam {
+@Table(name = "attendance_student_lesson")
+public class AttendanceStudentLesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_registration_student_team")
+    @Column(name = "id_attendance_student_lesson")
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "team_id_team", nullable = false, referencedColumnName = "id_team")
+    @JoinColumn(name = "lesson_id_lesson", nullable = false, referencedColumnName = "id_lesson")
     @JsonBackReference
-    private Team team;
+    private Lesson lesson;
 
     @ManyToOne
     @JoinColumn(name = "student_id_student", nullable = false, referencedColumnName = "id_student")
     @JsonBackReference
     private Student student;
 
-    @Column(name = "start_at_registration_student_team", nullable = false)
+    @Column(name = "is_present")
+    private boolean isPresent;
+
+    @Column(name = "attendance_type")
+    private String attendanceType;
+
+    @Column(name = "start_at_attendance_student_lesson", nullable = false)
     @CreationTimestamp
     private LocalDateTime startAt;
+
+
+
 }

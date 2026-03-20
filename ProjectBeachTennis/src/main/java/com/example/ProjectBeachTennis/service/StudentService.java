@@ -4,11 +4,9 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.example.ProjectBeachTennis.dto.*;
 import com.example.ProjectBeachTennis.errors.EntityAlreadyExistsException;
 import com.example.ProjectBeachTennis.errors.EntityNonExistsException;
-import com.example.ProjectBeachTennis.model.Lesson;
-import com.example.ProjectBeachTennis.model.Professor;
-import com.example.ProjectBeachTennis.model.Student;
-import com.example.ProjectBeachTennis.model.Team;
+import com.example.ProjectBeachTennis.model.*;
 import com.example.ProjectBeachTennis.repository.LessonRepository;
+import com.example.ProjectBeachTennis.repository.RegistrationStudentTeamRepository;
 import com.example.ProjectBeachTennis.repository.StudentRepository;
 import com.example.ProjectBeachTennis.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +31,24 @@ public class StudentService {
     @Autowired
     private LessonRepository lessonRepository;
 
+    @Autowired
+    private RegistrationStudentTeamRepository registrationStudentTeamRepository;
+
     // for development
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
+    }
+
+    public Optional<StudentResponseDTO> getStudentById(UUID id) {
+        return studentRepository.findById(id)
+                .map(student -> new StudentResponseDTO(
+                        student.getId(),
+                        student.getFullName(),
+                        student.getEmail(),
+                        student.getLevel(),
+                        student.getStatus(),
+                        student.getStartAt()
+                ));
     }
 
     public List<TeamResponseDTO> getTeamsByStudentId(UUID id) {
@@ -108,6 +121,19 @@ public class StudentService {
                         lesson.getTeam().getProfessor().getFullName()
                 )).toList();
     }
+
+    public List<RegistrationStudentTeamResponseDTO> getRegistrationStudentTeamByStudentId(UUID id) {
+        List<RegistrationStudentTeam> registrations = registrationStudentTeamRepository.findByStudentId(id);
+
+        return registrations.stream()
+                .map(registration -> new RegistrationStudentTeamResponseDTO(
+                        registration.getId(),
+                        registration.getStudent().getId(),
+                        registration.getTeam().getId(),
+                        registration.getStartAt()
+                )).toList();
+    }
+
 
     public void delete(UUID id) {
         var student = this.studentRepository.findById(id).orElse(null);

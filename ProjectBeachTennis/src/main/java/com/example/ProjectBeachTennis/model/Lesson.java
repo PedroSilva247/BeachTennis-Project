@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -29,4 +30,8 @@ public class Lesson {
     @JoinColumn(name = "team_id_team", nullable = false, referencedColumnName = "id_team")
     @JsonBackReference
     private Team team;
+
+    @OneToMany(mappedBy = "lesson")
+    private List<AttendanceStudentLesson> attendances;
+
 }

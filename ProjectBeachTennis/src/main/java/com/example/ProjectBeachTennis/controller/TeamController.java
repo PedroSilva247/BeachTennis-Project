@@ -1,6 +1,7 @@
 package com.example.ProjectBeachTennis.controller;
 
 import com.example.ProjectBeachTennis.dto.ProfessorResponseDTO;
+import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamResponseDTO;
 import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
 import com.example.ProjectBeachTennis.dto.TeamRequestDTO;
 import com.example.ProjectBeachTennis.model.Lesson;
@@ -124,7 +125,7 @@ public class TeamController {
         throw new RuntimeException("Usuário não encontrado");
     }
 
-    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @PreAuthorize("hasRole('PROFESSOR')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveTeam(
             @RequestBody TeamRequestDTO dto,
@@ -139,6 +140,28 @@ public class TeamController {
         }
 
         return new ResponseEntity<>(teamService.saveTeam(dto), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('PROFESSOR')")
+    @GetMapping("/api/team/{id}/registrationstudentteam")
+    public ResponseEntity<?> getRegistrationStudentTeamByTeamId(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String emailLogged = userDetails.getUsername();
+        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        if (!professorLogged.id().equals(teamService.getTeamById(id).get().getProfessor().getId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+        }
+
+        List<RegistrationStudentTeamResponseDTO> registrations = teamService.getRegistrationStudentTeamByTeamId(id);
+        if(!registrations.isEmpty()) {
+            return ResponseEntity.ok().body(registrations);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package com.example.ProjectBeachTennis.service;
 
-import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamDTO;
+import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamRequestDTO;
+import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamResponseDTO;
+import com.example.ProjectBeachTennis.errors.EntityNonExistsException;
 import com.example.ProjectBeachTennis.model.RegistrationStudentTeam;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RegistrationStudentTeamService {
@@ -27,17 +30,33 @@ public class RegistrationStudentTeamService {
         return registrationStudentTeamRepository.findAll();
     }
 
-    public RegistrationStudentTeam saveRegistrationStudentTeam(RegistrationStudentTeamDTO dto) {
-        Student student = studentRepository.findById(dto.getStudentId())
+    public RegistrationStudentTeamResponseDTO saveRegistrationStudentTeam(RegistrationStudentTeamRequestDTO dto) {
+        Student student = studentRepository.findById(dto.studentId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
-        Team team = teamRepository.findById(dto.getTeamId())
+        Team team = teamRepository.findById(dto.teamId())
                 .orElseThrow(() -> new RuntimeException("Time não encontrado"));
 
         RegistrationStudentTeam registration = new RegistrationStudentTeam();
         registration.setStudent(student);
         registration.setTeam(team);
 
-        return registrationStudentTeamRepository.save(registration);
+
+        registrationStudentTeamRepository.save(registration);
+
+        return new RegistrationStudentTeamResponseDTO(
+                registration.getId(),
+                registration.getStudent().getId(),
+                registration.getTeam().getId(),
+                registration.getStartAt()
+        );
+    }
+
+    public void delete(UUID id) {
+        var registration = this.registrationStudentTeamRepository.findById(id).orElse(null);
+        if(registration == null) {
+            throw new EntityNonExistsException("Registro não encontrado");
+        }
+        registrationStudentTeamRepository.delete(registration);
     }
 }

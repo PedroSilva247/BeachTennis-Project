@@ -1,9 +1,6 @@
 package com.example.ProjectBeachTennis.controller;
 
-import com.example.ProjectBeachTennis.dto.LessonResponseDTO;
-import com.example.ProjectBeachTennis.dto.ProfessorResponseDTO;
-import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
-import com.example.ProjectBeachTennis.dto.TeamResponseDTO;
+import com.example.ProjectBeachTennis.dto.*;
 import com.example.ProjectBeachTennis.model.Professor;
 import com.example.ProjectBeachTennis.model.Student;
 import com.example.ProjectBeachTennis.model.Team;
@@ -28,9 +25,12 @@ public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 
-    // for development
+    @Autowired
+    private LessonService lessonService;
+
+
     @GetMapping
-    public List<Professor> getAllProfessors() {
+    public List<ProfessorResponseDTO> getAllProfessors() {
         return professorService.getAllProfessors();
     }
 
@@ -98,6 +98,28 @@ public class ProfessorController {
         }
     }
 
+//    @PreAuthorize("hasRole('PROFESSOR')")
+//    @GetMapping("/{id}/lessons")
+//    public ResponseEntity<?> getLessonsByProfessorId(
+//            @PathVariable UUID id,
+//            @AuthenticationPrincipal UserDetails userDetails
+//    ) {
+//        String emailLogged = userDetails.getUsername();
+//        ProfessorResponseDTO professorLogged = professorService.getProfessorByEmail(emailLogged)
+//                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+//
+//        if (!professorLogged.id().equals(id)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
+//        }
+//
+//        List<LessonResponseDTO> lessons = professorService.getLessonsByProfessorId(id);
+//        if(!lessons.isEmpty()) {
+//            return ResponseEntity.ok(lessons);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
     @PreAuthorize("hasRole('PROFESSOR')")
     @GetMapping("/{id}/lessons")
     public ResponseEntity<?> getLessonsByProfessorId(
@@ -112,12 +134,9 @@ public class ProfessorController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acesso negado");
         }
 
-        List<LessonResponseDTO> lessons = professorService.getLessonsByProfessorId(id);
-        if(!lessons.isEmpty()) {
-            return ResponseEntity.ok(lessons);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // O Controller do professor pede pro Service de aulas fazer o trabalho pesado
+        List<LessonWithStudentsDTO> lessons = lessonService.getLessonsByProfessorId(id);
+        return ResponseEntity.ok(lessons);
     }
 
     @PreAuthorize("#id = authentication.principal.id")

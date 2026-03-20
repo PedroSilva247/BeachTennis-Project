@@ -37,6 +37,9 @@ public class Team {
     @JsonBackReference
     private Professor professor;
 
+    @OneToMany(mappedBy = "team")
+    private List<RegistrationStudentTeam> registrations;
+
     @Column(name = "start_at_team", nullable = false)
     @CreationTimestamp
     private LocalDateTime startAt;

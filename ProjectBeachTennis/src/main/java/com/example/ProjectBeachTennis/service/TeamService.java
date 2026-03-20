@@ -1,16 +1,11 @@
 package com.example.ProjectBeachTennis.service;
 
+import com.example.ProjectBeachTennis.dto.RegistrationStudentTeamResponseDTO;
 import com.example.ProjectBeachTennis.dto.StudentResponseDTO;
 import com.example.ProjectBeachTennis.dto.TeamRequestDTO;
 import com.example.ProjectBeachTennis.dto.TeamResponseDTO;
-import com.example.ProjectBeachTennis.model.Lesson;
-import com.example.ProjectBeachTennis.model.Professor;
-import com.example.ProjectBeachTennis.model.Student;
-import com.example.ProjectBeachTennis.model.Team;
-import com.example.ProjectBeachTennis.repository.LessonRepository;
-import com.example.ProjectBeachTennis.repository.ProfessorRepository;
-import com.example.ProjectBeachTennis.repository.StudentRepository;
-import com.example.ProjectBeachTennis.repository.TeamRepository;
+import com.example.ProjectBeachTennis.model.*;
+import com.example.ProjectBeachTennis.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +26,9 @@ public class TeamService {
 
     @Autowired
     private ProfessorRepository professorRepository;
+
+    @Autowired
+    private RegistrationStudentTeamRepository registrationStudentTeamRepository;
 
     public Optional<Team> getTeamById(UUID id) {
         return teamRepository.findTeamById(id);
@@ -83,5 +81,17 @@ public class TeamService {
                 team.getProfessor().getId(),
                 team.getStartAt()
         );
+    }
+
+    public List<RegistrationStudentTeamResponseDTO> getRegistrationStudentTeamByTeamId(UUID id) {
+        List<RegistrationStudentTeam> registrations = registrationStudentTeamRepository.findByTeamId(id);
+
+        return registrations.stream()
+                .map(registration -> new RegistrationStudentTeamResponseDTO(
+                        registration.getId(),
+                        registration.getStudent().getId(),
+                        registration.getTeam().getId(),
+                        registration.getStartAt()
+                )).toList();
     }
 }
