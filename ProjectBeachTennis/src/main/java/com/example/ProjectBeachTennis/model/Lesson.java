@@ -31,7 +31,7 @@ public class Lesson {
     @JsonBackReference
     private Team team;
 
-    @OneToMany(mappedBy = "lesson")
-    private List<AttendanceStudentLesson> attendances;
+//    @OneToMany(mappedBy = "lesson")
+//    private List<AttendanceStudentLesson> attendances;
 
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AttendanceStudentLessonService {
@@ -24,6 +25,10 @@ public class AttendanceStudentLessonService {
         return attendanceStudentLessonRepository.findAll();
     }
 
+    public List<AttendanceStudentLesson> getAttendancesStudentLessonByLessonId(UUID lessonId) {
+        return attendanceStudentLessonRepository.findByLessonId(lessonId);
+    }
+
     public AttendanceStudentLessonResponseDTO saveAttendanceStudentLesson(AttendanceStudentLessonRequestDTO dto) {
         Student student = studentRepository.findById(dto.studentId())
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
@@ -36,6 +41,8 @@ public class AttendanceStudentLessonService {
         attendance.setLesson(lesson);
         attendance.setPresent(dto.isPresent());
         attendance.setAttendanceType(dto.attendanceType());
+
+        attendanceStudentLessonRepository.save(attendance);
 
         return new AttendanceStudentLessonResponseDTO(
                 attendance.getId(),

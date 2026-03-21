@@ -41,6 +41,9 @@ public class AttendanceStudentLessonController {
         return attendanceStudentLessonService.getAllAttendanceStudentLesson();
     }
 
+
+
+
     @PreAuthorize("hasRole('PROFESSOR')")
     @PostMapping
     public ResponseEntity<?> saveAttendanceStudentLesson(

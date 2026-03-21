@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface AttendanceStudentLessonRepository extends JpaRepository<AttendanceStudentLesson, UUID> {
     List<AttendanceStudentLesson> findByStudentId(UUID studentId);
 
+    List<AttendanceStudentLesson> findByLessonId(UUID lessonId);
     // List<AttendanceStudentLesson> findBy
 }

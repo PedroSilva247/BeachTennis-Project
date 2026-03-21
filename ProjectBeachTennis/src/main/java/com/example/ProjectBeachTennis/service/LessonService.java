@@ -5,14 +5,16 @@ import com.example.ProjectBeachTennis.dto.LessonResponseDTO;
 import com.example.ProjectBeachTennis.dto.LessonWithStudentsDTO;
 import com.example.ProjectBeachTennis.dto.StudentPresenceDTO;
 import com.example.ProjectBeachTennis.model.AttendanceStudentLesson;
+import com.example.ProjectBeachTennis.model.RegistrationStudentTeam;
 import com.example.ProjectBeachTennis.model.Team;
-import com.example.ProjectBeachTennis.repository.LessonRepository;
+import com.example.ProjectBeachTennis.repository.*;
 import com.example.ProjectBeachTennis.model.Lesson;
-import com.example.ProjectBeachTennis.repository.TeamRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +27,15 @@ public class LessonService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private AttendanceStudentLessonRepository attendanceStudentLessonRepository;
+
+    @Autowired
+    private RegistrationStudentTeamRepository registrationStudentTeamRepository;
+
     // for development
     public List<Lesson> getAllLessons() {
         return lessonRepository.findAll();
@@ -34,6 +45,7 @@ public class LessonService {
         return lessonRepository.findById(id);
     }
 
+    @Transactional
     public LessonResponseDTO saveLesson(LessonRequestDTO dto) {
 
         Team team = teamRepository.findTeamById(dto.teamId()).orElseThrow(() -> new RuntimeException("Time não encontrado"));
@@ -45,7 +57,24 @@ public class LessonService {
         lesson.setLessonConducted(dto.isLessonConducted());
 
 
-        lessonRepository.save(lesson);
+        Lesson savedLesson = lessonRepository.save(lesson);
+
+        List<RegistrationStudentTeam> registrations = registrationStudentTeamRepository.findByTeamId(team.getId());
+
+        List<AttendanceStudentLesson> attendanceList = new ArrayList<>();
+
+        for (RegistrationStudentTeam registration : registrations) {
+            AttendanceStudentLesson attendance = new AttendanceStudentLesson();
+            attendance.setLesson(savedLesson);
+            attendance.setStudent(registration.getStudent());
+            attendance.setPresent(false);
+            attendance.setAttendanceType("Expected");
+
+            attendanceList.add(attendance);
+        }
+
+        List<AttendanceStudentLesson> savedAttendances = attendanceStudentLessonRepository.saveAll(attendanceList);
+
 
         return new LessonResponseDTO(
                 lesson.getId(),
@@ -61,12 +90,15 @@ public class LessonService {
         // 1. Busca todas as aulas deste professor
         List<Lesson> lessons = lessonRepository.findLessonsByProfessorId(professorId);
 
+
+
         // 2. Converte as aulas para o DTO aninhado
         return lessons.stream()
                 .map(lesson -> {
-
+                    List<AttendanceStudentLesson> attendances = attendanceStudentLessonRepository.findByLessonId(lesson.getId());
+                    System.out.println(attendances);
                     // 3. Pega a lista de presenças da aula, filtra e converte para StudentPresenceDTO
-                    List<StudentPresenceDTO> attendants = lesson.getAttendances().stream()
+                    List<StudentPresenceDTO> attendants = attendances.stream()
                             .filter(AttendanceStudentLesson::isPresent) // Pega SÓ quem estava presente
                             .map(att -> new StudentPresenceDTO(
                                     att.getStudent().getId(),
